@@ -1,12 +1,13 @@
 # cordova-plugins-socket
 将原生socket封装成cordova插件,在webApp中可以使用此插件进行原生socket进行通信
-
+## 安装
+```
+cordova plugin add 插件本地路径
+```
 
 ## 链接socket
 ```
 window.cordova.plugins.appsocket.connecting("端口地址:int", "ip地址:string", () => {
-    this.protocolName = this.Property.name;
-    this.services.showToast('固件链接成功', 2000);
      console.log('固件链接成功');
 }, () => {
     console.log('固件链接失败');

@@ -8,12 +8,9 @@
 #import "getgateway.h"
 #import <ifaddrs.h>
 #import <SystemConfiguration/CaptiveNetwork.h>
-typedef void(^recive_Success_Block)(NSString *data,NSString *type);
 @interface appsocket ()<GCDAsyncSocketDelegate>
 @property (nonatomic, strong) GCDAsyncSocket    *socket;
 @property (nonatomic, copy) NSString    *socketCallbckId;
-@property (nonatomic, copy) NSString    *type;
-@property (nonatomic, copy) NSDictionary    *socketVerify;
 @property(nonatomic,assign)int countDown; // 倒数计时用
 @property(nonatomic,strong)NSTimer *timer; // timer
 @property(nonatomic,strong)NSMutableData *completeData;//接收完整的包
@@ -30,10 +27,7 @@ static int const tick = 180;
     self.socket=  [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
     NSError *error = nil;
     int socketPort= [[command.arguments objectAtIndex:0] intValue];
-    self.socketVerify = [command.arguments objectAtIndex:1];
-    self.type = [command.arguments objectAtIndex:2];
-    NSString *hostIP = [self localIPAddress];
-//    NSString *hostIP = @"192.168.1.1";
+    NSString *hostIP = [command.arguments objectAtIndex:1];;
     [self.socket connectToHost:hostIP onPort:socketPort viaInterface:nil withTimeout:-1 error:&error];
 }
 
@@ -96,7 +90,6 @@ static int const tick = 180;
     [self.socket  readDataWithTimeout:-1 tag:0];
     NSString* receiveHook = [NSString stringWithFormat:@"javascript:window.cordova.plugins.appsocket.receive(\"%@\")",content];
     [self.commandDelegate evalJs:receiveHook];
-    [self.socket  readDataToLength: [[self.socketVerify objectForKey:@"return_bytes"] intValue] withTimeout:-1  tag:0]; //正确就获取协议长度字节
     [self stopTimer];
     [self startCountDown];
 }
@@ -106,9 +99,6 @@ static int const tick = 180;
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port{
     [self stopTimer];
     [self startCountDown];
-    //发送校验JSON信息
-    NSData *verifyData = [NSJSONSerialization dataWithJSONObject:self.socketVerify options:kNilOptions error:nil];
-    [self.socket writeData:verifyData  withTimeout:-1 tag:0];
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"链接成功"];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:self.socketCallbckId ];
     [self.socket  readDataWithTimeout:-1 tag:0];

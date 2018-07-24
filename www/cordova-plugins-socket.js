@@ -2,10 +2,7 @@ var exec = require('cordova/exec');
 
 var appSocket = {
     connecting: function(port,initVerify,type, successCallback, errorCallback) {
-        exec(successCallback, errorCallback, 'appSocket', 'connecting', [port,initVerify,type]);
-    },
-    connectingTest: function(ip, port, initVerify, successCallback, errorCallback) {
-        exec(successCallback, errorCallback, 'appSocket', 'connectingTest', [ip, port, initVerify]);
+        exec(successCallback, errorCallback, 'appSocket', 'connecting', [port,ip]);
     },
     sendMsg: function(message,successCallback, errorCallback) {
         exec(successCallback, errorCallback, 'appSocket', 'sendMsg', [message]);
