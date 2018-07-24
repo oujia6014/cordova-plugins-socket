@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="cordova-plugins-socket" version="1.0.0" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+    <name>cordova-plugins-socket</name>
+    <js-module name="cordova-plugins-socket" src="www/cordova-plugins-socket.js">
+        <clobbers target="cordova.plugins.cordova-plugins-socket" />
+    </js-module>
+
+    <platform name="android">
+        <config-file parent="/*" target="res/xml/config.xml">
+            <feature name="Socket">
+                <param name="android-package" value="cordova-plugins-socket"/>
+            </feature>
+        </config-file>
+        <config-file parent="/*" target="AndroidManifest.xml">
+            <uses-permission android:name="android.permission.INTERNET"/>
+            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+            <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+            <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"/>
+            <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+        </config-file>
+        <source-file src="src/android/appsocket.java" target-dir="src/com/vanward/appsocket/appsocket"/>
+    </platform>
+
+
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="Socket">
+                <param name="ios-package" value="appsocket"/>
+            </feature>
+        </config-file>
+        <header-file src="src/ios/AsyncSocket/GCDAsyncSocket.h"/>
+        <source-file src="src/ios/AsyncSocket/GCDAsyncSocket.m"/>
+        <header-file src="src/ios/RouteAddress/getgateway.h"/>
+        <source-file src="src/ios/RouteAddress/getgateway.c"/>
+        <source-file src="src/ios/RouteAddress/route.h"/>
+        <header-file src="src/ios/appsocket.h"/>
+        <source-file src="src/ios/appsocket.m"/>
+    </platform>
+</plugin>
